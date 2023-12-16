@@ -20,7 +20,7 @@ using namespace std;
 
 const int P = 10;//число рабочих процессов (не используется в MPI)
 const int SIZE_MAS = 100000;
-const int T = 50;
+const int T = 10;
 const int list_size[9]{ 10, 30, 50, 70, 100, 500, 1000, 10000, 100000 };
 
 void merge(int list[], int start, int end, int mid);
@@ -121,8 +121,8 @@ std::string print_mas(int mas[])
     return s;
 }
 
-int threadsMax = 10; //макс число потоків
-LONG threadsNow = 0;    //поточне число потоків
+int threadsMax = T; //макс число потоків
+LONG threadsNow = 1;    //поточне число потоків
 
 DWORD WINAPI mergeSort_winapi(LPVOID p)
 {
@@ -162,9 +162,10 @@ DWORD WINAPI mergeSort_winapi(LPVOID p)
             WaitForSingleObject(newThread1, INFINITE);
             WaitForSingleObject(newThread2, INFINITE);
         }
-
-        mergeSort(params1);
-        mergeSort(params2);
+        else {
+            mergeSort(params1);
+            mergeSort(params2);
+        }
         
 
         merge(list, start, end, mid);
@@ -223,8 +224,6 @@ int main()
 
 
     start = clock(); // начальное время
-
-
     PartOfArray main = { mas_res_winpi, 0, n - 1 };
     mergeSort_winapi(LPVOID(&main));
 
@@ -232,7 +231,7 @@ int main()
     printf("Массив, отсортированный сортировкой слиянием: \n");
     //std::cout << print_mas(mas_res_winpi) << std::endl;
     winTime = ((double)(finish - start) / CLOCKS_PER_SEC);
-    printf("Время затраченное на сортировку слиянием OpenMP%25.10f с\n", winTime);
+    printf("Время затраченное на сортировку слиянием WinAPI%25.10f с\n", winTime);
     
     bool bl = true;
     for (int i = 0; i < n; i++) {
