@@ -20,7 +20,7 @@ using namespace std;
 
 const int P = 10;//число рабочих процессов (не используется в MPI)
 const int SIZE_MAS = 100000;
-const int T = 1;
+const int T = 2;
 const int list_size[9]{ 10, 30, 50, 70, 100, 500, 1000, 10000, 100000 };
 
 void merge(int list[], int start, int end, int mid);
@@ -30,8 +30,11 @@ void mergeSort(int list[], int start, int end)
     int mid;
     if (start < end) {
         mid = (start + end) / 2;
+        
+
         mergeSort(list, start, mid);
         mergeSort(list, mid + 1, end);
+        
         merge(list, start, end, mid);
     }
 }
@@ -45,8 +48,18 @@ void mergeSort(PartOfArray* partOfArra)
     int mid;
     if (start < end) {
         mid = (start + end) / 2;
-        mergeSort(list, start, mid);
-        mergeSort(list, mid + 1, end);
+
+        PartOfArray* params1 = new PartOfArray;
+        params1->start = start;
+        params1->end = mid;
+        params1->list = list;
+
+        mergeSort(params1);
+        PartOfArray* params2 = new PartOfArray;
+        params2->start = mid + 1;
+        params2->end = end;
+        params2->list = list;
+        mergeSort(params2);
         merge(list, start, end, mid);
     }
 }
@@ -88,27 +101,40 @@ void merge(int list[], int start, int end, int mid)
     }
 }
 
-void mergeSort_openmp(int list[], int start, int end)
+void mergeSort_openmp(PartOfArray* params)
 {
+    int* list = params->list;
+    int start = params->start;
+    int end = params->end;
+
     int mid;
     if (start < end) {
 
         mid = (start + end) / 2;
-
+        
 #pragma omp parallel sections
         {
 #pragma omp section
             {
-                mergeSort_openmp(list, start, mid);
+                PartOfArray* params1 = new PartOfArray;
+                params1->start = start;
+                params1->end = mid;
+                params1->list = list;
+                mergeSort_openmp(params1);
             }
 
 #pragma omp section
             {
-                mergeSort_openmp(list, mid + 1, end);
+                PartOfArray* params2 = new PartOfArray;
+                params2->start = mid + 1;
+                params2->end = end;
+                params2->list = list;
+                mergeSort_openmp(params2);
             }
         }
 
         merge(list, start, end, mid);
+
     }
 }
 std::string print_mas(int mas[])
@@ -210,7 +236,8 @@ int main()
     printf("Начальный массив:\n");
     //std::cout << print_mas(mas_res_openmp) << std::endl;
     start = clock(); // начальное время
-    mergeSort_openmp(mas_res_openmp, 0, n - 1);
+    PartOfArray main_openmp = { mas_res_openmp, 0, n - 1 };
+    mergeSort_openmp(&main_openmp);
     finish = clock(); // конечное время
     printf("Массив, отсортированный сортировкой слиянием: \n");
     //std::cout << print_mas(mas_res_normal) << std::endl;
