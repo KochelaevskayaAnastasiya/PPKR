@@ -111,33 +111,26 @@ void mergeSort_openmp(PartOfArray* params)
     if (start < end) {
 
         mid = (start + end) / 2;
-        PartOfArray* params1 = new PartOfArray;
-        params1->start = start;
-        params1->end = mid;
-        params1->list = list;
-        PartOfArray* params2 = new PartOfArray;
-        params2->start = mid + 1;
-        params2->end = end;
-        params2->list = list;
-        
 #pragma omp parallel sections
         {
 #pragma omp section
             {
-                
+                PartOfArray* params1 = new PartOfArray;
+                params1->start = start;
+                params1->end = mid;
+                params1->list = list;
                 mergeSort_openmp(params1);
             }
 #pragma omp section
             {
-                
+                PartOfArray* params2 = new PartOfArray;
+                params2->start = mid + 1;
+                params2->end = end;
+                params2->list = list;
                 mergeSort_openmp(params2);
             }
-
             merge(list, start, end, mid);
         }
-
-        
-
     }
 }
 std::string print_mas(int mas[])
