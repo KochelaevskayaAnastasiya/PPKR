@@ -20,7 +20,7 @@ using namespace std;
 
 const int P = 10;//число рабочих процессов (не используется в MPI)
 const int SIZE_MAS = 100000;
-const int T = 10;
+const int T = 1;
 const int list_size[9]{ 10, 30, 50, 70, 100, 500, 1000, 10000, 100000 };
 
 void merge(int list[], int start, int end, int mid);
