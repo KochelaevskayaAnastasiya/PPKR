@@ -219,8 +219,7 @@ int main()
     printf("Начальный массив:\n");
     //std::cout << print_mas(mas_res_winpi) << std::endl;
 
-    threadsMax = 10;
-    threadsNow = 1;
+ 
 
 
     start = clock(); // начальное время
