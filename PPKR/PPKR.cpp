@@ -135,10 +135,10 @@ DWORD WINAPI mergeSort_winapi(LPVOID p)
     int mid;
     if (start < end) {
         mid = (start + end) / 2;
-        PartOfArray* params1 = new PartOfArray[0];
+        PartOfArray* params1 = new PartOfArray;
         params1->start = start;
         params1->end = mid;
-        PartOfArray* params2 = new PartOfArray[0];
+        PartOfArray* params2 = new PartOfArray;
         params2->start = mid + 1;
         params2->end = end;
         if (threadsNow < threadsMax)
@@ -206,7 +206,13 @@ int main()
 
     printf("Начальный массив:\n");
     std::cout << print_mas(mas_res_openmp) << std::endl;
+
+    threadsMax = 10;
+    threadsNow = 1;
+
+
     start = clock(); // начальное время
+
 
     PartOfArray main = { mas_res_winpi, 0, n - 1 };
     mergeSort_winapi(LPVOID(&main));
