@@ -242,5 +242,12 @@ int main()
     winTime = ((double)(finish - start) / CLOCKS_PER_SEC);
     printf("Время затраченное на сортировку слиянием OpenMP%25.10f с\n", winTime);
     
+    bool bl = true;
+    for (int i = 0; i < n; i++) {
+        if (mas_res_normal[i] != mas_res_winpi[i])
+            bl = false;
+    }
+    if (bl)
+        printf("Массив отсортирован верно с помощью WinAPI\n\n\n");
 }
 
