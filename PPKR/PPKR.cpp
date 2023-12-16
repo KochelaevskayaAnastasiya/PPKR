@@ -121,7 +121,7 @@ std::string print_mas(int mas[])
     return s;
 }
 
-int threadsMax = 0; //макс число потоків
+int threadsMax = 100; //макс число потоків
 LONG threadsNow = 0;    //поточне число потоків
 
 DWORD WINAPI mergeSort_winapi(LPVOID p)
