@@ -19,7 +19,7 @@ using namespace std;
 
 
 const int P = 10;//число рабочих процессов (не используется в MPI)
-const int SIZE_MAS = 10;
+const int SIZE_MAS = 100000;
 const int T = 50;
 const int list_size[9]{ 10, 30, 50, 70, 100, 500, 1000, 10000, 100000 };
 
@@ -147,7 +147,7 @@ DWORD WINAPI mergeSort_winapi(LPVOID p)
         params2->list = list;
 
 
-        if (threadsNow < threadsMax)
+        if (threadsNow < threadsMax && count>4)
         {
             HANDLE  newThread1;
             HANDLE  newThread2;
@@ -158,13 +158,15 @@ DWORD WINAPI mergeSort_winapi(LPVOID p)
 
             mergeSort(params1);
 
+
             InterlockedIncrement(&threadsNow);
 
             newThread2 = CreateThread(0, 0, (LPTHREAD_START_ROUTINE)mergeSort_winapi, params2, 0, 0);
             WaitForSingleObject(newThread2, INFINITE);
 
-            
-            mergeSort(params2);
+           mergeSort(params2);
+
+
 
         }
         else
@@ -172,7 +174,7 @@ DWORD WINAPI mergeSort_winapi(LPVOID p)
             mergeSort(params1);
             mergeSort(params2);
         }
-        merge(list, start, end, mid);
+        
 
     }
 
@@ -202,29 +204,29 @@ int main()
     }
 
     printf("Начальный массив:\n");
-    std::cout << print_mas(mas_res_normal) << std::endl;
+    //std::cout << print_mas(mas_res_normal) << std::endl;
     start = clock(); // начальное время
     mergeSort(mas_res_normal, 0, n - 1);
     finish = clock(); // конечное время
     printf("Массив, отсортированный сортировкой слиянием: \n");
-    std::cout << print_mas(mas_res_normal) << std::endl;
+    //std::cout << print_mas(mas_res_normal) << std::endl;
     sTime = ((double)(finish - start) / CLOCKS_PER_SEC);
     printf("Время затраченное на сортировку слиянием стандартную%25.10f с\n", sTime);
 
     printf("Начальный массив:\n");
-    std::cout << print_mas(mas_res_openmp) << std::endl;
+    //std::cout << print_mas(mas_res_openmp) << std::endl;
     start = clock(); // начальное время
     mergeSort_openmp(mas_res_openmp, 0, n - 1);
     finish = clock(); // конечное время
     printf("Массив, отсортированный сортировкой слиянием: \n");
-    std::cout << print_mas(mas_res_normal) << std::endl;
+    //std::cout << print_mas(mas_res_normal) << std::endl;
     ompTime = ((double)(finish - start) / CLOCKS_PER_SEC);
     printf("Время затраченное на сортировку слиянием OpenMP%25.10f с\n", ompTime);
 
     printf("Начальный массив:\n");
-    std::cout << print_mas(mas_res_winpi) << std::endl;
+    //std::cout << print_mas(mas_res_winpi) << std::endl;
 
-    threadsMax = 10;
+    threadsMax = 100;
     threadsNow = 1;
 
 
@@ -236,7 +238,7 @@ int main()
 
     finish = clock(); // конечное время
     printf("Массив, отсортированный сортировкой слиянием: \n");
-    std::cout << print_mas(mas_res_winpi) << std::endl;
+    //std::cout << print_mas(mas_res_winpi) << std::endl;
     winTime = ((double)(finish - start) / CLOCKS_PER_SEC);
     printf("Время затраченное на сортировку слиянием OpenMP%25.10f с\n", winTime);
     
