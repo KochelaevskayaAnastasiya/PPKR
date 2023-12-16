@@ -226,7 +226,7 @@ int main()
     printf("Массив, отсортированный сортировкой слиянием: \n");
     //std::cout << print_mas(mas_res_normal) << std::endl;
     sTime = ((double)(finish - start) / CLOCKS_PER_SEC);
-    printf("Время затраченное на сортировку слиянием стандартную%25.10f с\n", sTime);
+    printf("Время затраченное на сортировку слиянием стандартную%25.10f с\n\n\n", sTime);
 
     printf("Начальный массив:\n");
     //std::cout << print_mas(mas_res_openmp) << std::endl;
@@ -238,6 +238,16 @@ int main()
     //std::cout << print_mas(mas_res_normal) << std::endl;
     ompTime = ((double)(finish - start) / CLOCKS_PER_SEC);
     printf("Время затраченное на сортировку слиянием OpenMP%25.10f с\n", ompTime);
+
+    bool bl2 = true;
+    for (int i = 0; i < n; i++) {
+        if (mas_res_normal[i] != mas_res_openmp[i])
+            bl2 = false;
+    }
+    if (bl2)
+        printf("Массив отсортирован верно с помощью OpenMP\n\n\n");
+    else
+        printf("Массив отсортирован неверно с помощью OpenMP\n\n\n");
 
     printf("Начальный массив:\n");
     //std::cout << print_mas(mas_res_winpi) << std::endl;
