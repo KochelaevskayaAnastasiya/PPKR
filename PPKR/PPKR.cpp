@@ -19,9 +19,9 @@ using namespace std;
 
 
 const int P = 10;//число рабочих процессов (не используется в MPI)
-const int SIZE_MAS = 100000;
-const int T = 2;
-const int list_size[9]{ 10, 30, 50, 70, 100, 500, 1000, 10000, 100000 };
+const int SIZE_MAS = 10;
+const int T = 10;
+const int list_size[9]{ 10, 30, 50, 70, 100, 500, 1000, 10000, 100000};
 
 void merge(int list[], int start, int end, int mid);
 
@@ -192,13 +192,8 @@ DWORD WINAPI mergeSort_winapi(LPVOID p)
             mergeSort(params1);
             mergeSort(params2);
         }
-        
-
         merge(list, start, end, mid);
-
     }
-
-    
 
     return 0;
 }
@@ -246,9 +241,6 @@ int main()
 
     printf("Начальный массив:\n");
     //std::cout << print_mas(mas_res_winpi) << std::endl;
-
- 
-
 
     start = clock(); // начальное время
     PartOfArray main = { mas_res_winpi, 0, n - 1 };
