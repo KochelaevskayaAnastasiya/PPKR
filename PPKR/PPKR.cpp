@@ -146,6 +146,7 @@ DWORD WINAPI mergeSort_winapi(LPVOID p)
         params2->end = end;
         params2->list = list;
 
+
         if (threadsNow < threadsMax && count >= 10)
         {
             HANDLE  newThread1;
