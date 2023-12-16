@@ -132,16 +132,21 @@ DWORD WINAPI mergeSort_winapi(LPVOID p)
     int start = params->start;
     int end = params->end;
 
+    int count = end - start;
+
     int mid;
-    if (start < end) {
+    if (start < end && list!=NULL) {
         mid = (start + end) / 2;
         PartOfArray* params1 = new PartOfArray;
         params1->start = start;
         params1->end = mid;
+        params1->list = list;
         PartOfArray* params2 = new PartOfArray;
         params2->start = mid + 1;
         params2->end = end;
-        if (threadsNow < threadsMax)
+        params2->list = list;
+
+        if (threadsNow < threadsMax && count >= 10)
         {
             HANDLE  newThread1;
             HANDLE  newThread2;
@@ -149,6 +154,8 @@ DWORD WINAPI mergeSort_winapi(LPVOID p)
 
             newThread1 = CreateThread(0, 0, (LPTHREAD_START_ROUTINE)mergeSort_winapi, params1, 0, 0);
             WaitForSingleObject(newThread1, INFINITE);
+
+            InterlockedIncrement(&threadsNow);
 
             newThread2 = CreateThread(0, 0, (LPTHREAD_START_ROUTINE)mergeSort_winapi, params2, 0, 0);
             WaitForSingleObject(newThread2, INFINITE);
@@ -205,7 +212,7 @@ int main()
     printf("Время затраченное на сортировку слиянием OpenMP%25.10f с\n", ompTime);
 
     printf("Начальный массив:\n");
-    std::cout << print_mas(mas_res_openmp) << std::endl;
+    std::cout << print_mas(mas_res_winpi) << std::endl;
 
     threadsMax = 10;
     threadsNow = 1;
