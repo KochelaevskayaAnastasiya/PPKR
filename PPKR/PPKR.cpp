@@ -19,7 +19,7 @@ using namespace std;
 
 
 const int P = 10;//число рабочих процессов (не используется в MPI)
-const int SIZE_MAS = 10;
+const int SIZE_MAS = 100000;
 const int T = 50;
 const int list_size[9]{ 10, 30, 50, 70, 100, 500, 1000, 10000, 100000 };
 
@@ -147,34 +147,27 @@ DWORD WINAPI mergeSort_winapi(LPVOID p)
         params2->list = list;
 
 
-        if (threadsNow < threadsMax && count>4)
+        if (threadsNow < threadsMax)
         {
             HANDLE  newThread1;
             HANDLE  newThread2;
             InterlockedIncrement(&threadsNow);
 
             newThread1 = CreateThread(0, 0, (LPTHREAD_START_ROUTINE)mergeSort_winapi, params1, 0, 0);
-            WaitForSingleObject(newThread1, INFINITE);
-
-            mergeSort(params1);
-
 
             InterlockedIncrement(&threadsNow);
 
             newThread2 = CreateThread(0, 0, (LPTHREAD_START_ROUTINE)mergeSort_winapi, params2, 0, 0);
+
+            WaitForSingleObject(newThread1, INFINITE);
             WaitForSingleObject(newThread2, INFINITE);
-
-           mergeSort(params2);
-
-
-
         }
-        else
-        {
-            mergeSort(params1);
-            mergeSort(params2);
-        }
+
+        mergeSort(params1);
+        mergeSort(params2);
         
+
+        merge(list, start, end, mid);
 
     }
 
