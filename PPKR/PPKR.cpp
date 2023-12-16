@@ -19,9 +19,9 @@ using namespace std;
 
 
 const int P = 10;//число рабочих процессов (не используется в MPI)
-const int SIZE_MAS = 10;
-const int T = 10;
-const int list_size[9]{ 10, 30, 50, 70, 100, 500, 1000, 10000, 100000};
+const int SIZE_MAS = 100000;
+const int T = 50;
+const int list_size[9]{ 10, 30, 50, 70, 100, 500, 1000, 10000, 100000 };
 
 void merge(int list[], int start, int end, int mid);
 
@@ -147,8 +147,8 @@ std::string print_mas(int mas[])
     return s;
 }
 
-int threadsMax = T; //макс число потоків
-LONG threadsNow = 1;    //поточне число потоків
+int threadsMax = 10; //макс число потоків
+LONG threadsNow = 0;    //поточне число потоків
 
 DWORD WINAPI mergeSort_winapi(LPVOID p)
 {
