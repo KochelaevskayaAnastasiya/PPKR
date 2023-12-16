@@ -19,7 +19,7 @@ using namespace std;
 
 
 const int P = 10;//число рабочих процессов (не используется в MPI)
-const int SIZE_MAS = 100000;
+const int SIZE_MAS = 10;
 const int T = 50;
 const int list_size[9]{ 10, 30, 50, 70, 100, 500, 1000, 10000, 100000 };
 
@@ -121,7 +121,7 @@ std::string print_mas(int mas[])
     return s;
 }
 
-int threadsMax = 100; //макс число потоків
+int threadsMax = 10; //макс число потоків
 LONG threadsNow = 0;    //поточне число потоків
 
 DWORD WINAPI mergeSort_winapi(LPVOID p)
@@ -226,7 +226,7 @@ int main()
     printf("Начальный массив:\n");
     //std::cout << print_mas(mas_res_winpi) << std::endl;
 
-    threadsMax = 100;
+    threadsMax = 10;
     threadsNow = 1;
 
 
