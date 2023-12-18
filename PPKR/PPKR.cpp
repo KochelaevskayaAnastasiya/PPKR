@@ -143,8 +143,8 @@ std::string print_mas(int mas[])
     return s;
 }
 
-int threadsMax = T; //макс число потоків
-LONG threadsNow = 1;    //поточне число потоків
+int threadsMax = T;
+LONG threadsNow = 1;
 
 DWORD WINAPI mergeSort_winapi(LPVOID p)
 {
@@ -226,8 +226,9 @@ int main()
 
     printf("Начальный массив:\n");
     //std::cout << print_mas(mas_res_openmp) << std::endl;
-    start = clock(); // начальное время
+    
     PartOfArray main_openmp = { mas_res_openmp, 0, n - 1 };
+    start = clock(); // начальное время
     mergeSort_openmp(&main_openmp);
     finish = clock(); // конечное время
     printf("Массив, отсортированный сортировкой слиянием: \n");
@@ -248,8 +249,8 @@ int main()
     printf("Начальный массив:\n");
     //std::cout << print_mas(mas_res_winpi) << std::endl;
 
-    start = clock(); // начальное время
     PartOfArray main = { mas_res_winpi, 0, n - 1 };
+    start = clock(); // начальное время
     mergeSort_winapi(LPVOID(&main));
 
     finish = clock(); // конечное время
