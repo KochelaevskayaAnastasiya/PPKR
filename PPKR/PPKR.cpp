@@ -8,6 +8,8 @@
 #include <vector>
 #include <string>
 
+
+
 struct PartOfArray
 {
     int* list; 
@@ -19,8 +21,9 @@ using namespace std;
 
 
 const int P = 10;//число рабочих процессов (не используется в MPI)
+
 const int SIZE_MAS = 100000;
-const int T = 10;
+const int T = 8;
 const int list_size[9]{ 10, 30, 50, 70, 100, 500, 1000, 10000, 100000 };
 
 void merge(int list[], int start, int end, int mid);
@@ -101,7 +104,7 @@ void merge(int list[], int start, int end, int mid)
     }
 }
 
-void mergeSort_openmp(PartOfArray* params)
+void mergeSort_openmp(PartOfArray* params,int n)
 {
     int* list = params->list;
     int start = params->start;
@@ -111,26 +114,25 @@ void mergeSort_openmp(PartOfArray* params)
     if (start < end) {
 
         mid = (start + end) / 2;
-#pragma omp parallel sections
-        {
-#pragma omp section
-            {
                 PartOfArray* params1 = new PartOfArray;
                 params1->start = start;
                 params1->end = mid;
                 params1->list = list;
-                mergeSort_openmp(params1);
-            }
-#pragma omp section
-            {
+
+#pragma omp task
+                mergeSort_openmp(params1, n-2);
+
                 PartOfArray* params2 = new PartOfArray;
                 params2->start = mid + 1;
                 params2->end = end;
                 params2->list = list;
-                mergeSort_openmp(params2);
-            }
-            merge(list, start, end, mid);
-        }
+
+#pragma omp task
+                mergeSort_openmp(params2, n-2);
+
+            
+#pragma omp taskwait
+        merge(list, start, end, mid);
     }
 }
 std::string print_mas(int mas[])
@@ -229,7 +231,12 @@ int main()
     
     PartOfArray main_openmp = { mas_res_openmp, 0, n - 1 };
     start = clock(); // начальное время
-    mergeSort_openmp(&main_openmp);
+#pragma omp parallel
+    {
+#pragma omp single
+        mergeSort_openmp(&main_openmp, T);
+    }
+    
     finish = clock(); // конечное время
     printf("Массив, отсортированный сортировкой слиянием: \n");
     //std::cout << print_mas(mas_res_normal) << std::endl;
